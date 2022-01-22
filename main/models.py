@@ -1,27 +1,46 @@
 from django.db import models
-from django.urls import reverse
+from django.contrib.auth.models import User
 
-# Create your models here.
-class Author(models.Model):
-    name = models.CharField("Name", max_length=100)
-    surname = models.CharField("Surname", max_length=100)
-    age = models.CharField("Age", max_length=50)
-    year = models.CharField("Year", max_length=30)
-    image = models.ImageField("Image", upload_to='images/')
 
-    def __str__(self):
-        return f"{self.name}"
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    profile_photo = models.FileField(upload_to='profile_photos')
+    status_info = models.CharField(default="Your status put here", max_length=1000)
+
+    def str(self):
+        return f'{self.user.username} Profile'
+
 
 class Post(models.Model):
-    title = models.CharField("Post nomi", max_length=150)
-    slug = models.SlugField("*", max_length=150)
-    image = models.ImageField(upload_to='')
-    description = models.TextField()
-    date = models.DateTimeField(auto_now_add=True)
-    author = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    title = models.CharField(max_length=200)
+    slug = models.SlugField("*", max_length=200)
+    created_at = models.DateTimeField(auto_now_add=True)
+    post_text = models.CharField(max_length=2000)
+    post_picture = models.ImageField(upload_to='post_picture')
 
-    def __str__(self):
-        return f"{self.title}"
+    def str(self):
+        return self.user.username
 
-    def get_absolute_url(self):
-        return reverse('post_detail', args=[str(self.pk)])
+    class Meta:
+        ordering = ['-id']
+
+
+class Video_post(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    post_text = models.CharField(max_length=2000)
+    post_picture = models.FileField(upload_to='post_picture')
+
+# Model for storing comment
+class Comment(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    comment_text = models.CharField(default="", max_length=2000)
+
+
+class Reply_comment(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    comment_text = models.CharField(default="", max_length=2000)
