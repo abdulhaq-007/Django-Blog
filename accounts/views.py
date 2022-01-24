@@ -12,14 +12,14 @@ def register(request):
             user = form.save(commit=False)
             user.set_password(form.cleaned_data['password'])
             user.save()
-            return render(request, "index.html")
+            return render(request, "home.html")
     else:
         form = UserRegisterForm()
     return render(request, "account/register.html", {"form":form})
 
 class LoginView(LoginView):
     template_name = 'account/login.html'  
-    success_url = '/'
+    success_url = 'home.html'
 
 class LogoutView(LogoutView):
     template_name = 'account/logout.html'
