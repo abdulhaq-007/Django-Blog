@@ -10,9 +10,27 @@ class Profile(models.Model):
     def str(self):
         return f'{self.user.username} Profile'
 
+class Tag(models.Model):
+    name = models.CharField("Tag nomi",max_length=100)
+    slug = models.SlugField("*", max_length=100, unique=True)
+
+    def __str__(self):
+        return f"{self.name}"   
+
+class Category(models.Model):
+    name = models.CharField("Kategoriya nomi", max_length=100,)
+    slug = models.SlugField("*", max_length=100, unique=True)
+
+    def get_absolute_url(self):
+        return reverse("blog:category_detail", kwargs={"category_slug":self.slug})
+
+    def __str__(self):
+        return f"{self.name}"
 
 class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    category = models.name = models.ForeignKey(Category, related_name='category', on_delete=models.CASCADE)
+    tags = models.ManyToManyField(Tag, verbose_name=("Tags"))
     title = models.CharField(max_length=200)
     slug = models.SlugField("*", max_length=200)
     created_at = models.DateTimeField(auto_now_add=True)
