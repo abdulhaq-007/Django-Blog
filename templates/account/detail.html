@@ -1,0 +1,116 @@
+{% extends '../base.html' %}
+{% load static %}
+{% block content %}
+
+    <section class="section mt-5 mb-5 pt-5 pb-5">
+        <div class="container">
+
+            <div class="columns">
+                <div class="column is-full">
+                    <div class="columns box mt-1">
+                        <div class="column is-3">
+                            <div class="image is-1by1">
+                            <img class="is-rounded" src="{{ user.image_url }}">
+                            </div><br>
+                            <hr>
+                            <span class="has-text-success is-size-2">
+                               +{{user.likes}}
+                                <i class="fas fa-thumbs-up"></i>
+                            </span>
+                        </div>
+                        <div class="column is-5">
+                            <div class="title">
+                                {% if request.user.first_name %}
+                                    {{request.user.first_name}}
+                                    {{request.user.last_name}}
+                                {% else %}
+                                    Name is undefined
+                                {% endif %}
+                            </div>
+
+                            <div class="subtitle">
+                                 {% if request.user.profile.short_info %}
+                                    {{request.user.profile.short_info}}
+                                {% else %}
+                                    Info is undefined
+                                {% endif %}
+                            </div>
+                            <ul>
+                                <li class="is-size-4 mt-2">
+                                    <i class="fas fa-birthday-cake"></i> Date of birthday : {{user.date_of_birth|date:"d/m/Y"}}
+                                </li>
+                                <li class="is-size-4 mt-2">
+                                    <i class="fas fa-calendar-alt"></i> On site : {{user.user.date_joined|date:"d/m/Y"}}
+                                </li>
+                                <li class="is-size-4 mt-2">
+                                    <i class="fas fa-thumbs-up"></i> Likes :  {{user.follower}}</li>
+                                <li class="is-size-4 mt-2"><i class="fas fa-clipboard"></i> Posts :  {{user.post}}</li>
+                                <li class="is-size-4 mt-2"><i class="fas fa-star"></i> Ranking :  {{user.rank}}</li>
+                                <li class="is-size-4 mt-2"><i class="fas fa-info"></i> User icon :  <i class="has-text-info {{user.user_icon}}"></i></li>
+                            </ul>
+                            <a href="{% url 'accounts:update' user.id %}" class="button is-info mt-4">
+                                Edit profile
+                            </a>
+                        </div>
+                        <div class="column is-4">
+                            <div class="is-center">
+                                <div class="title">
+                                    <table class="table">
+                                        <tr>
+                                            <td width="80%">
+                                              My Posts
+                                            </td>
+                                            <td width="10%"></td>
+                                            <td>
+                                                 <a href="{% url 'main:add' %}" class="button is-link is-right" title="Add New Post">
+                                                    Add new post
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </table>
+
+                                </div>
+
+                            </div>
+                            <div class="table-container">
+                              <table class="table is-hoverable is-fullwidth">
+                                  <thead>
+                                    <tr>
+                                      <th>Post</th>
+                                      <th>Polkadots</th>
+                                      <th>Comments</th>
+
+                                    </tr>
+                                  </thead>
+                                  <tfoot>
+                                  <tr>
+                                      <td><b>Lorem ipsum dolor sit amet.</b></td>
+                                      <td><b>+88</b></td>
+                                      <td><b>12</b></td>
+                                  </tr>
+                                  <tr>
+                                      <td><b>Lorem ipsum dolor sit amet.</b></td>
+                                      <td><b>+88</b></td>
+                                      <td><b>12</b></td>
+                                  </tr>
+                                  <tr>
+                                      <td><b>Lorem ipsum dolor sit amet.</b></td>
+                                      <td><b>+88</b></td>
+                                      <td><b>12</b></td>
+                                  </tr>
+                                  </tfoot>
+                              </table>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </section>
+<br><br>
+<br><br>
+<br><br>
+{% endblock %}

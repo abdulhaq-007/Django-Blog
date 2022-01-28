@@ -1,0 +1,179 @@
+{% extends "base.html" %} {% block content %} {% autoescape off %}
+<section class="section">
+    <div class="container">
+        <div class="columns">
+            <div class="column is-7">
+                <div class="center mt-5">
+                    <div class="title is-size-2">
+                        Share your personal funny thoughts with others here
+                    </div>
+                    <div class="subtitle mt-5">
+                        Sign up to start sharing with the peas
+                    </div>
+                    <div class="mt-5">
+                        {% if request.user.is_authenticated %}
+                        <a href="#polka" class="button is-success">
+                                   Polkadots
+                                </a> {% else %}
+                        <a href="{% url 'accounts:register' %}" class="button is-success">
+                                Sign Up
+                            </a> {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="column is-5">
+                <div class="title mt-5">
+                    Related tags
+                </div>
+                <div class="menu">
+                    <ul id="banner_tags">
+                        {% for tag in tags %}
+                        <li class="tag"><a href="{{tag.get_url}}">{{tag.title}}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section" id="polka">
+    <div class="container">
+        <div class="columns">
+            <div class="column is-full box">
+                <nav class="breadcrumb p-2" aria-label="breadcrumbs">
+                    <ul>
+                        {% for cat in categories %}
+                        <li>
+                            <a href="{{cat.get_url}}">
+                                <span class="icon is-small">
+                                <i class="{{cat.icon}}" aria-hidden="true"></i>
+                              </span>
+                                <span>{{cat.title}}</span>
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        <div class="columns">
+            <div class="column is-8">
+                {% for post in page_obj %}
+                <div class="columns box mt-1">
+
+                    <div class="column is-full">
+                        <div class="content">
+                          <a href="{% url 'main:detail' post.id %}">
+                          <div class="subtitle">{{post.title}}</div>
+                          </a>
+                            {{post.body}}
+                        </div>
+                        <p class="is-right">
+                            Posted by <span class="tag is-link "><a href="#" class="has-text-white">{{post.author}}</a></span> Tags {% for tag in post.tags.all %}
+                            <span class="tag"><a href="#" >{{tag.name}}</a></span> {% endfor %}
+                            <span class="icon-text">
+                              <span class="icon has-text-info">
+                                <i class="fas fa-thumbs-up"></i>
+                              </span>
+                              <span>{{post.up}}</span>
+                            </span>
+
+                            <span class="icon-text">
+                              <span class="icon has-text-info">
+                                <i class="fas fa-thumbs-down"></i>
+                              </span>
+                              <span>{{post.down}}</span>
+                            </span>
+                        </p>
+
+                    </div>
+                </div>
+                {% endfor %}
+                <nav class="pagination" role="navigation" aria-label="pagination">
+                  {% if page_obj.has_previous %}
+                    <a class="pagination-previous" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                    {% endif %}
+
+                    {% if page_obj.has_next %}
+                    <a class="pagination-next" href="?page={{ page_obj.next_page_number }}">Next page</a>
+                        {% endif %}
+                    <ul class="pagination-list">
+                      {% for num in page_obj.paginator.page_range %}
+                      {% ifequal num page_obj.number %}
+                          <li>
+                              <a class="pagination-link is-current" href="#" aria-label="Page 1" aria-current="page">{{ num }}</a>
+                          </li>
+                          {% else %}
+                          <li>
+                              <a class="pagination-link " href="?page={{ num }}" aria-label="Page {{num}}" aria-current="page">{{ num }}</a>
+                          </li>
+                          {% endifequal %}
+                        {% endfor %}
+                    </ul>
+                </nav>
+            </div>
+            <div class="column is-4">
+                <article class="panel is-success">
+                    <p class="panel-heading">
+                        Search polkadots
+                    </p>
+
+                    <form class="panel-block" id="searchForm" action="#" method="get" onkeydown="InlineSearch(this[0].value)">
+                        <p class="control has-icons-left">
+                            <input class="input is-success" type="text" placeholder="Ha , qidiramiz.">
+                            <span class="icon is-left">
+                              <i class="fas fa-search" aria-hidden="true"></i>
+                            </span>
+                        </p>
+                    </form>
+                    <span id="result_list">
+                      {% for obj in posts|slice:'3' %}
+                       <a class="panel-block is-active" href="{% url 'main:detail' obj.id %}">
+                           <span class="panel-icon">
+                           <i class="{{obj.icon}}" aria-hidden="true"></i>
+                           </span> {{obj.title}}
+                       </a>
+                       {% endfor %}
+                    </span>
+
+
+                </article>
+                <br>
+                <article class="panel is-info">
+                    <p class="panel-heading">
+                        TOP 5 users with polkadots
+                    </p>
+
+                    <a class="panel-block is-active">
+                        <span class="panel-icon">
+                            <i class="fas fa-user" aria-hidden="true"></i>
+                          </span> Master Joda
+                    </a>
+                    <a class="panel-block is-active">
+                        <span class="panel-icon">
+                            <i class="fas fa-user" aria-hidden="true"></i>
+                          </span> Luke Skywalker
+                    </a>
+                    <a class="panel-block is-active">
+                        <span class="panel-icon">
+                            <i class="fas fa-user" aria-hidden="true"></i>
+                          </span> Chui
+                    </a>
+                    <a class="panel-block is-active">
+                        <span class="panel-icon">
+                            <i class="fas fa-user" aria-hidden="true"></i>
+                          </span> R2D2
+                    </a>
+                    <a class="panel-block is-active">
+                        <span class="panel-icon">
+                            <i class="fas fa-user" aria-hidden="true"></i>
+                          </span> Khan Solo
+                    </a>
+
+                </article>
+            </div>
+        </div>
+    </div>
+</section>
+{% endautoescape %} {% endblock %}

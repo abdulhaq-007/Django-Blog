@@ -1,64 +1,65 @@
 from django.db import models
+from django.shortcuts import reverse
+# from accounts.models import Profile
 from django.contrib.auth.models import User
+from ckeditor.fields import RichTextField
 
 
-class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    profile_photo = models.FileField(upload_to='profile_photos')
-    status_info = models.CharField(default="Your status put here", max_length=1000)
+# Create your models here.
 
-    def str(self):
-        return f'{self.user.username} Profile'
-
-class Tag(models.Model):
-    name = models.CharField("Tag nomi",max_length=100)
-    slug = models.SlugField("*", max_length=100, unique=True)
-
-    def __str__(self):
-        return f"{self.name}"   
 
 class Category(models.Model):
-    name = models.CharField("Kategoriya nomi", max_length=100,)
-    slug = models.SlugField("*", max_length=100, unique=True)
+	title = models.CharField('Category name *',max_length=50)
+	icon = models.CharField(max_length=50, blank=True)
+	slug = models.SlugField('*',max_length=25, unique=True)
 
-    def get_absolute_url(self):
-        return reverse("blog:category_detail", kwargs={"category_slug":self.slug})
+	class Meta:
+		verbose_name = 'Category'
+		verbose_name_plural = 'Categories'
 
-    def __str__(self):
-        return f"{self.name}"
+	def get_url(self):
+		return reverse("main:category_list", kwargs={"category_slug":self.slug})
+
+	def __str__(self):
+		return "{}".format(self.title)
+
+class Tag(models.Model):
+	title = models.CharField('Tag name *',max_length=50)
+	icon = models.CharField(max_length=50, blank=True)
+	slug = models.SlugField('*',max_length=25, unique=True)
+
+
+	def get_url(self):
+		return reverse("main:tag_list", kwargs={"tag_slug":self.slug})
+
+	class Meta:
+		verbose_name = 'Tag'
+		verbose_name_plural = 'Tags'
+
+	def __str__(self):
+		return "{}".format(self.title)
+
 
 class Post(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    category = models.name = models.ForeignKey(Category, related_name='category', on_delete=models.CASCADE)
-    tags = models.ManyToManyField(Tag, verbose_name=("Tags"))
-    title = models.CharField(max_length=200)
-    slug = models.SlugField("*", max_length=200)
-    created_at = models.DateTimeField(auto_now_add=True)
-    post_text = models.CharField(max_length=2000)
-    post_picture = models.ImageField(upload_to='post_picture')
+	title = models.CharField(max_length=250)
+	body = RichTextField()
+	author = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+	up = models.PositiveIntegerField(default=0)
+	down = models.PositiveIntegerField(default=0)
+	active = models.BooleanField(default=True)
+	category = models.ForeignKey(Category, on_delete=models.PROTECT, null=True, related_name='categories')
+	tag = models.ManyToManyField(Tag, related_name='tags')
+	published = models.DateTimeField(auto_now_add=True)
 
-    def str(self):
-        return self.user.username
-
-    class Meta:
-        ordering = ['-id']
+	class Meta:
+		ordering = ["-id"]
 
 
-class Video_post(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    post_text = models.CharField(max_length=2000)
-    post_picture = models.FileField(upload_to='post_picture')
 
-# Model for storing comment
-class Comment(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    comment_text = models.CharField(default="", max_length=2000)
+class Like(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="users")
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="posts")
+    alreadyLiked = models.BooleanField(default=False)
 
-
-class Reply_comment(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE)
-    comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    comment_text = models.CharField(default="", max_length=2000)
+    def __str__(self):
+        return f"{self.user} liked {self.post}"

@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from .models import Profile
 from django import forms
 
 class UserRegisterForm(forms.ModelForm):
@@ -26,3 +27,12 @@ class UserEditForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ('first_name', 'last_name', 'email')
+
+class ProfileEditForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ('date_of_birth', 'photo', "short_info","user_icon")
+        widgets = {
+            "short_info":forms.Textarea(attrs={"cols": 3,"rows":3}),
+            "date_of_birth":forms.DateInput(format='%d/%m/%Y', attrs={"type": "date"})
+        }
