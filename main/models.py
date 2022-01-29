@@ -44,6 +44,7 @@ class Post(models.Model):
 	title = models.CharField(max_length=250)
 	body = RichTextField()
 	author = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+	image = models.ImageField(upload_to="images/")
 	up = models.PositiveIntegerField(default=0)
 	down = models.PositiveIntegerField(default=0)
 	active = models.BooleanField(default=True)
